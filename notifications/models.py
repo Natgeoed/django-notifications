@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.db import models
-from django.utils.timezone import utc
 from .utils import id2slug
 
 from notifications.signals import notify
@@ -176,7 +175,7 @@ def notify_handler(verb, **kwargs):
         public=bool(kwargs.pop('public', True)),
         level=kwargs.pop('level', 'info'),
         description=kwargs.pop('description', None),
-        timestamp=kwargs.pop('timestamp', now())
+        timestamp=kwargs.pop('timestamp', now()) or now()
     )
 
     for opt in ('target', 'action_object'):

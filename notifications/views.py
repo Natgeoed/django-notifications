@@ -12,8 +12,19 @@ def all(request):
     """
     Index page for authenticated user
     """
+    level = request.GET.get('level', None)
+    all_levels = list(Notification.LEVELS._db_values)
+    if level is None:
+        levels = all_levels
+        notifications = request.user.notifications.all()
+    else:
+        levels = level.split(",")
+        notifications = request.user.notifications.all().filter(level__in=levels)
+
     return render(request, 'notifications/list.html', {
-        'notifications': request.user.notifications.all()
+        'notifications': notifications,
+        'levels': levels,
+        'all_levels': all_levels
     })
     actions = request.user.notifications.all()
 
@@ -28,18 +39,28 @@ def all(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         action_list = paginator.page(paginator.num_pages)
-        
-    return render_to_response('notifications/list.html', {
+
+    return render(request, 'notifications/list.html', {
         'member': request.user,
         'action_list': action_list,
     }, context_instance=RequestContext(request))
 
 @login_required
 def unread(request):
+    level = request.GET.get('level', None)
+    all_levels = list(Notification.LEVELS._db_values)
+    if level is None:
+        levels = all_levels
+        notifications = request.user.notifications.unread()
+    else:
+        levels = level.split(",")
+        notifications = request.user.notifications.unread().filter(level__in=levels)
     return render(request, 'notifications/list.html', {
-        'notifications': request.user.notifications.unread()
+        'notifications': notifications,
+        'levels': levels,
+        'all_levels': all_levels
     })
-    
+
 @login_required
 def mark_all_as_read(request):
     request.user.notifications.mark_all_as_read()
