@@ -12,9 +12,9 @@ except ImportError:
 __version_info__ = {
     'major': 0,
     'minor': 6,
-    'micro': 2,
-    'releaselevel': 'final',
-    'serial': 0
+    'micro': 3,
+    'releaselevel': 'beta',
+    'serial': 1
 }
 
 
